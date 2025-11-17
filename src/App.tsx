@@ -7,8 +7,11 @@ import { TodoList } from './components/TodoList';
 import { TodoFilter } from './components/TodoFilter';
 import { TodoModal } from './components/TodoModal';
 import { Loader } from './components/Loader';
+import { todoContext } from './contexts/TodoContext';
 
 export const App: React.FC = () => {
+  const { todos, modalOpen } = React.useContext(todoContext);
+
   return (
     <>
       <div className="section">
@@ -21,14 +24,13 @@ export const App: React.FC = () => {
             </div>
 
             <div className="block">
-              <Loader />
-              <TodoList />
+              {todos.length === 0 ? <Loader /> : <TodoList />}
             </div>
           </div>
         </div>
       </div>
 
-      <TodoModal />
+      {modalOpen && <TodoModal />}
     </>
   );
 };

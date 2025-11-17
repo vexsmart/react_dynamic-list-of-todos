@@ -38,13 +38,14 @@ export const TodoFilter = () => {
 
         <span className="icon is-right" style={{ pointerEvents: 'all' }}>
           {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          {searchTitle && <button
-            data-cy="clearSearchButton"
-            type="button"
-            onClick={setSearchTitle.bind(null, '')}
-            className="delete"
-          />
-          }
+          {searchTitle && (
+            <button
+              data-cy="clearSearchButton"
+              type="button"
+              onClick={setSearchTitle.bind(null, '')}
+              className="delete"
+            />
+          )}
         </span>
       </p>
     </form>

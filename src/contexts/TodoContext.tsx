@@ -73,10 +73,9 @@ export const TodoContextProvider = ({
     getTodos().then(setTodos);
   }, []);
 
-  const activeTodos = todos.filter(todo => todo.completed === false);
-  const completedTodos = todos.filter(todo => todo.completed === true);
-
   const filteredTodos = React.useMemo(() => {
+    const activeTodos = todos.filter(todo => todo.completed === false);
+    const completedTodos = todos.filter(todo => todo.completed === true);
     switch (selectedFilter) {
       case 'active':
         return activeTodos;
@@ -85,7 +84,7 @@ export const TodoContextProvider = ({
       default:
         return todos;
     }
-  }, [todos, activeTodos, completedTodos, selectedFilter]);
+  }, [todos,  selectedFilter]);
 
   const handleOpenUserModal = (todo: Todo) => {
     getUser(todo.userId)

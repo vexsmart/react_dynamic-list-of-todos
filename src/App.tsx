@@ -2,6 +2,7 @@
 import React from 'react';
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
+import { Error } from './components/Error';
 
 import { TodoList } from './components/TodoList';
 import { TodoFilter } from './components/TodoFilter';
@@ -10,7 +11,7 @@ import { Loader } from './components/Loader';
 import { todoContext } from './contexts/TodoContext';
 
 export const App: React.FC = () => {
-  const { todos, modalOpen } = React.useContext(todoContext);
+  const { modalOpen, hasError, isLoading } = React.useContext(todoContext);
 
   return (
     <>
@@ -24,7 +25,7 @@ export const App: React.FC = () => {
             </div>
 
             <div className="block">
-              {todos.length === 0 ? <Loader /> : <TodoList />}
+              {isLoading ? <Loader /> : hasError ? <Error /> : <TodoList />}
             </div>
           </div>
         </div>

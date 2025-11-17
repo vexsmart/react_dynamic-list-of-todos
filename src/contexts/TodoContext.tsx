@@ -5,6 +5,7 @@ import { FilterType } from '../types/FilterType';
 import { getTodos, getUser } from '../api';
 
 type TodoContextType = {
+  loadTodos: () => void;
   todos: Todo[];
   setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
   selectedFilter: FilterType;
@@ -17,6 +18,10 @@ type TodoContextType = {
   user: User;
   setUser: React.Dispatch<React.SetStateAction<User>>;
   userTodo: Todo;
+  isLoading: boolean;
+  hasError: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setHasError: React.Dispatch<React.SetStateAction<boolean>>;
   setUserTodo: React.Dispatch<React.SetStateAction<Todo>>;
   handleOpenUserModal: (todo: Todo) => void;
   handleCloseUserModal: () => void;
@@ -24,6 +29,7 @@ type TodoContextType = {
 };
 
 export const todoContext = React.createContext<TodoContextType>({
+  loadTodos: () => {},
   todos: [],
   setTodos: () => {},
   selectedFilter: 'all',
@@ -47,6 +53,10 @@ export const todoContext = React.createContext<TodoContextType>({
     completed: false,
   },
   setUserTodo: () => {},
+  hasError: false,
+  isLoading: true,
+  setIsLoading: () => {},
+  setHasError: () => {},
   handleOpenUserModal: () => {},
   handleCloseUserModal: () => {},
   handleSearchChange: () => {},
@@ -68,14 +78,25 @@ export const TodoContextProvider = ({
     completed: false,
   });
   const [user, setUser] = React.useState<User>({} as User);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [hasError, setHasError] = React.useState<boolean>(false);
+
+  const loadTodos = React.useCallback(() => {
+    setIsLoading(true);
+    getTodos()
+      .then(setTodos)
+      .catch(() => setHasError(true))
+      .finally(() => setIsLoading(false));
+  }, []);
 
   useEffect(() => {
-    getTodos().then(setTodos);
-  }, []);
+    loadTodos();
+  }, [loadTodos]);
 
   const filteredTodos = React.useMemo(() => {
     const activeTodos = todos.filter(todo => todo.completed === false);
     const completedTodos = todos.filter(todo => todo.completed === true);
+
     switch (selectedFilter) {
       case 'active':
         return activeTodos;
@@ -84,12 +105,11 @@ export const TodoContextProvider = ({
       default:
         return todos;
     }
-  }, [todos,  selectedFilter]);
+  }, [todos, selectedFilter]);
 
   const handleOpenUserModal = (todo: Todo) => {
-    getUser(todo.userId)
-      .then(userPromise => setUser(userPromise))
-      .then(() => setUserTodo(todo));
+    setUserTodo(todo);
+    getUser(todo.userId).then(setUser);
     setModalOpen(true);
   };
 
@@ -108,6 +128,7 @@ export const TodoContextProvider = ({
   );
 
   const contextValue = {
+    loadTodos,
     todos,
     setTodos,
     selectedFilter,
@@ -121,6 +142,10 @@ export const TodoContextProvider = ({
     setUser,
     userTodo,
     setUserTodo,
+    isLoading,
+    hasError,
+    setIsLoading,
+    setHasError,
     handleOpenUserModal,
     handleCloseUserModal,
     handleSearchChange,

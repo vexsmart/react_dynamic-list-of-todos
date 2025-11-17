@@ -1,5 +1,6 @@
 import React from 'react';
 import { todoContext } from '../../contexts/TodoContext';
+import cn from 'classnames';
 
 export const TodoList: React.FC = () => {
   const { visibleTodos, modalOpen, userTodo, handleOpenUserModal } =
@@ -37,7 +38,10 @@ export const TodoList: React.FC = () => {
               <td className="is-vcentered" />
               <td className="is-vcentered is-expanded">
                 <p
-                  className={`has-text-${todo.completed ? 'success' : 'danger'}`}
+                  className={cn({
+                    'has-text-success': todo.completed,
+                    'has-text-danger': !todo.completed,
+                  })}
                 >
                   {todo.title}
                 </p>
@@ -53,7 +57,10 @@ export const TodoList: React.FC = () => {
                 >
                   <span className="icon">
                     <i
-                      className={`far fa-eye${todo.id === userTodo.id && modalOpen ? '-slash' : ''}`}
+                      className={cn('far', {
+                        'fa-eye-slash': todo.id === userTodo.id && modalOpen,
+                        'far fa-eye': todo.id !== userTodo.id || !modalOpen,
+                      })}
                     />
                   </span>
                 </button>

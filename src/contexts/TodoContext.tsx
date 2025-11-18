@@ -58,7 +58,7 @@ export const todoContext = React.createContext<TodoContextType>({
   hasError: false,
   isLoading: true,
   setIsLoading: () => {},
-  setHasError: () => { },
+  setHasError: () => {},
   userError: false,
   isUserLoading: true,
   handleOpenUserModal: () => {},
@@ -115,6 +115,7 @@ export const TodoContextProvider = ({
 
   const handleOpenUserModal = (todo: Todo) => {
     setUserTodo(todo);
+    setUser({} as User);
     getUser(todo.userId)
       .then(setUser)
       .catch(() => setUserError(true))

@@ -3,14 +3,14 @@ import { Loader } from '../Loader';
 import { todoContext } from '../../contexts/TodoContext';
 
 export const TodoModal: React.FC = () => {
-  const { handleCloseUserModal, user, userTodo } =
+  const { handleCloseUserModal, user, isUserLoading, userTodo } =
     React.useContext(todoContext);
 
   return (
     <div className="modal is-active" data-cy="modal">
       <div className="modal-background" />
 
-      {Object.keys(user).length === 0 ? (
+      {isUserLoading ? (
         <Loader />
       ) : (
         <div className="modal-card">

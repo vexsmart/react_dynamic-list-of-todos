@@ -23,6 +23,8 @@ type TodoContextType = {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setHasError: React.Dispatch<React.SetStateAction<boolean>>;
   setUserTodo: React.Dispatch<React.SetStateAction<Todo>>;
+  userError: boolean;
+  isUserLoading: boolean;
   handleOpenUserModal: (todo: Todo) => void;
   handleCloseUserModal: () => void;
   handleSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -56,7 +58,9 @@ export const todoContext = React.createContext<TodoContextType>({
   hasError: false,
   isLoading: true,
   setIsLoading: () => {},
-  setHasError: () => {},
+  setHasError: () => { },
+  userError: false,
+  isUserLoading: true,
   handleOpenUserModal: () => {},
   handleCloseUserModal: () => {},
   handleSearchChange: () => {},
@@ -79,7 +83,9 @@ export const TodoContextProvider = ({
   });
   const [user, setUser] = React.useState<User>({} as User);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isUserLoading, setIsUserLoading] = React.useState<boolean>(true);
   const [hasError, setHasError] = React.useState<boolean>(false);
+  const [userError, setUserError] = React.useState<boolean>(false);
 
   const loadTodos = React.useCallback(() => {
     setIsLoading(true);
@@ -109,7 +115,10 @@ export const TodoContextProvider = ({
 
   const handleOpenUserModal = (todo: Todo) => {
     setUserTodo(todo);
-    getUser(todo.userId).then(setUser);
+    getUser(todo.userId)
+      .then(setUser)
+      .catch(() => setUserError(true))
+      .finally(() => setIsUserLoading(false));
     setModalOpen(true);
   };
 
@@ -146,6 +155,8 @@ export const TodoContextProvider = ({
     hasError,
     setIsLoading,
     setHasError,
+    isUserLoading,
+    userError,
     handleOpenUserModal,
     handleCloseUserModal,
     handleSearchChange,

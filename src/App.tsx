@@ -11,7 +11,8 @@ import { Loader } from './components/Loader';
 import { todoContext } from './contexts/TodoContext';
 
 export const App: React.FC = () => {
-  const { modalOpen, hasError, isLoading } = React.useContext(todoContext);
+  const { modalOpen, hasError, isLoading, userError } =
+    React.useContext(todoContext);
 
   return (
     <>
@@ -31,7 +32,7 @@ export const App: React.FC = () => {
         </div>
       </div>
 
-      {modalOpen && <TodoModal />}
+      {userError ? <Error /> : modalOpen && <TodoModal />}
     </>
   );
 };
